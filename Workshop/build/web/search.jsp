@@ -17,70 +17,70 @@
 
         <style>
             .book-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 25px 0;
-    font-size: 14px;
-    font-family: Arial, sans-serif;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-}
+                width: 100%;
+                border-collapse: collapse;
+                margin: 25px 0;
+                font-size: 14px;
+                font-family: Arial, sans-serif;
+                box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            }
 
-.book-table thead th {
-    background-color: #EF9A12;
-    color: #ffffff;
-    text-align: left;
-    font-weight: bold;
-    padding: 12px 15px;
-}
+            .book-table thead th {
+                background-color: #EF9A12;
+                color: #ffffff;
+                text-align: left;
+                font-weight: bold;
+                padding: 12px 15px;
+            }
 
-.book-table tbody tr {
-    border-bottom: 1px solid #dddddd;
-}
+            .book-table tbody tr {
+                border-bottom: 1px solid #dddddd;
+            }
 
-.book-table tbody tr:nth-of-type(even) {
-    background-color: #ffebcc;
-}
+            .book-table tbody tr:nth-of-type(even) {
+                background-color: #ffebcc;
+            }
 
-.book-table tbody tr:last-of-type {
-    border-bottom: 2px solid #EF9A12;
-}
+            .book-table tbody tr:last-of-type {
+                border-bottom: 2px solid #EF9A12;
+            }
 
-.book-table tbody td {
-    padding: 12px 15px;
-}
+            .book-table tbody td {
+                padding: 12px 15px;
+            }
 
-.book-table tbody tr:hover {
-    background-color: #ffd699; 
-    transition: 0.3s ease;
-}
+            .book-table tbody tr:hover {
+                background-color: #ffd699; 
+                transition: 0.3s ease;
+            }
 
-/* Nút tìm kiếm và thêm */
-.search-btn, .add-btn {
-    background-color: #EF9A12; 
-    color: white;
-    border: none;
-    border-radius: 4px;
-    padding: 10px 15px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: background-color 0.3s;
-}
+            /* Nút tìm kiếm và thêm */
+            .search-btn, .add-btn {
+                background-color: #EF9A12; 
+                color: white;
+                border: none;
+                border-radius: 4px;
+                padding: 10px 15px;
+                cursor: pointer;
+                font-weight: bold;
+                transition: background-color 0.3s;
+            }
 
-.search-btn:hover, .add-btn:hover {
-    background-color: #e65c00; 
-}
+            .search-btn:hover, .add-btn:hover {
+                background-color: #e65c00; 
+            }
 
-/* Responsive */
-@media screen and (max-width: 600px) {
-    .book-table {
-        font-size: 12px;
-    }
+            /* Responsive */
+            @media screen and (max-width: 600px) {
+                .book-table {
+                    font-size: 12px;
+                }
 
-    .book-table thead th,
-    .book-table tbody td {
-        padding: 8px 10px;
-    }
-}
+                .book-table thead th,
+                .book-table tbody td {
+                    padding: 8px 10px;
+                }
+            }
         </style> 
     </head>
     <body> 

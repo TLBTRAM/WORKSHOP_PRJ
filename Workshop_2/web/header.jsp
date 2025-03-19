@@ -1,9 +1,9 @@
-
 <%@page import="utils.AuthUtils"%>
 <%@page import="dto.UserDTO"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+
 <style>
-    *{
+    * {
         margin: 0;
         padding: 0;
         box-sizing: border-box;
@@ -49,7 +49,7 @@
     .menu {
         display: flex;
         list-style: none;
-        gap: 2.5rem;
+        gap: 2rem;
     }
 
     .menu-item a {
@@ -60,23 +60,13 @@
         position: relative;
     }
 
-    .menu-item a::after {
-        content: '';
-        position: absolute;
-        left: 0;
-        bottom: -3px;
-        width: 0;
-        height: 2px;
-        background: #f1c40f;
-        transition: width 0.3s ease-in-out;
-    }
-
-    .menu-item a:hover::after {
-        width: 100%;
-    }
-
     .menu-item a:hover {
         color: #f1c40f;
+    }
+
+    .separator {
+        color: #f1c40f;
+        font-weight: bold;
     }
 
     /* Search Bar */
@@ -89,15 +79,11 @@
         box-shadow: 0 2px 10px rgba(255, 255, 255, 0.1);
     }
 
-    .search-bar:hover {
-        box-shadow: 0 2px 15px rgba(255, 255, 255, 0.2);
-    }
-
     .search-input {
         border: none;
         outline: none;
         padding: 0.3rem;
-        width: 220px;
+        width: 200px;
         font-size: 0.9rem;
     }
 
@@ -106,7 +92,7 @@
         border: none;
         cursor: pointer;
         color: #16213e;
-        font-size: 1.2rem;
+        font-size: 1.1rem;
         transition: color 0.3s;
     }
 
@@ -118,8 +104,8 @@
     .user-section {
         display: flex;
         align-items: center;
-        gap: 1.2rem;
-        margin-left: 2rem;
+        gap: 1rem;
+        margin-left: 1.5rem;
     }
 
     .welcome-text {
@@ -149,6 +135,21 @@
         transform: translateY(-2px);
     }
 
+    .login-btn {
+        background: linear-gradient(135deg, #2980b9, #3498db);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 5px;
+        text-decoration: none;
+        font-size: 0.9rem;
+        transition: background 0.3s, transform 0.2s;
+    }
+
+    .login-btn:hover {
+        background: #3498db;
+        transform: translateY(-2px);
+    }
+
     /* Right Section */
     .right-section {
         display: flex;
@@ -157,37 +158,42 @@
 </style>
 
 <header class="header">
-    <%
-
-    %>
     <div class="container">
         <nav class="nav">
             <a href="#" class="logo">Online Examination</a>
             <ul class="menu">
                 <li class="menu-item"><a href="#">Home</a></li>
-                <li class="menu-item"><a href="#">|</a></li>
+                <li class="separator">|</li>
                 <li class="menu-item"><a href="#">Categories</a></li>
-                <li class="menu-item"><a href="#">|</a></li>
+                <li class="separator">|</li>
                 <li class="menu-item"><a href="#">Exam</a></li>
-                <li class="menu-item"><a href="#">|</a></li>
-                <li class="menu-item"><a href="#">Score</a></li>
             </ul>
             <div class="right-section">
+                <!-- Thanh tìm kiếm -->
                 <div class="search-bar">
-                    <input type="text" class="search-input" placeholder="Tìm kiếm...">
+                    <input type="text" class="search-input" placeholder="Searching...">
                     <button class="search-button">🔍</button>
                 </div>
-                <%  if (AuthUtils.isLoggedIn(session)) {
-                        UserDTO userHeader = AuthUtils.getUser(session);
+
+                <!-- Kiểm tra đăng nhập -->
+                <% 
+                    boolean isLoggedIn = AuthUtils.isLoggedIn(session);
+                    UserDTO userHeader = isLoggedIn ? AuthUtils.getUser(session) : null;
                 %>
+
+                <% if (isLoggedIn && userHeader != null) { %>
                 <div class="user-section">
-                    <span class="welcome-text">Welcome, <span class="user-name"><%=userHeader.getName()%></span>!</span>
-                    <form action="MainController" method="post" style="margin: 0;">
+                    <span class="welcome-text">
+                        Welcome, <span class="user-name"><%= userHeader.getName() %></span>!
+                    </span>
+                    <form action="MainController" method="post" class="logout-form">
                         <input type="hidden" name="action" value="logout"/>
-                        <input type="submit" value="Đăng xuất" class="logout-btn"/>
+                        <input type="submit" value="Logout" class="logout-btn"/>
                     </form>
                 </div>
-                <%}%>
+                <% } else { %>
+                <a href="login.jsp" class="login-btn">Đăng nhập</a>
+                <% } %>
             </div>
         </nav>
     </div>

@@ -8,10 +8,11 @@
  * Created: Mar 10, 2025
  */
 
-CREATE DATABASE prj301_1820_workshop2
+
+CREATE DATABASE prj301_1820_workshop_02
 GO
 
-USE prj301_1820_workshop2
+USE prj301_1820_workshop_02
 GO
 
 CREATE TABLE tblUsers (

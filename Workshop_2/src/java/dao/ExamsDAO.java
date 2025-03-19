@@ -197,4 +197,49 @@ public class ExamsDAO implements IDAO<ExamsDTO, Integer> {
         return list;
     }
 
+    public static boolean insertExam(ExamsDTO exam) {
+        String sql = "INSERT INTO tblExams (exam_title, subject, category_id, total_marks, duration) VALUES (?, ?, ?, ?, ?)";
+        try (Connection con = DBUtils.getConnection();
+                PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setString(1, exam.getExam_title());
+            ps.setString(2, exam.getSubject());
+            ps.setInt(3, exam.getCategory_id());
+            ps.setInt(4, exam.getTotal_marks());
+            ps.setInt(5, exam.getDuration());
+            
+            return ps.executeUpdate() > 0; 
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+    
+    public List<ExamsDTO> viewExam(){
+        
+        String sql = "SELECT * FROM tblExams";
+        List<ExamsDTO> list = new ArrayList<>();
+        
+        try{
+            Connection conn = DBUtils.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            
+            while(rs.next()){
+                ExamsDTO e = new ExamsDTO(
+                                        rs.getInt("exam_id"),
+                                        rs.getString("exam_title"),
+                                        rs.getString("Subject"),
+                                        rs.getInt("category_id"),
+                                        rs.getInt("total_marks"),
+                                        rs.getInt("Duration"));
+                list.add(e);
+            }
+        }catch (Exception e) {
+            System.out.println(e.toString());
+        }      
+        return list;
+    }  
+
 }

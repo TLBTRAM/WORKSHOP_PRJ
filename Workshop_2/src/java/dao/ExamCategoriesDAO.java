@@ -166,4 +166,27 @@ public class ExamCategoriesDAO implements IDAO<ExamCategoriesDTO, Integer> {
         }
         return null;
     }
+    
+    public List<ExamCategoriesDTO> viewExamCategory(){
+        
+        String sql = "SELECT * FROM tblExamCategories";
+        List<ExamCategoriesDTO> list = new ArrayList<>();
+        
+        try{
+            Connection conn = DBUtils.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            
+            while(rs.next()){
+                ExamCategoriesDTO e = new ExamCategoriesDTO(
+                                        rs.getInt("category_id"),
+                                        rs.getString("category_name"),
+                                        rs.getString("description"));                          
+                list.add(e);
+            }
+        }catch (Exception e) {
+            System.out.println(e.toString());
+        }      
+        return list;
+    }  
 }

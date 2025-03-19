@@ -1,6 +1,7 @@
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <style>
+    
     .footer {
         background: linear-gradient(135deg, #1A1B30, #2C2F46); 
         color: #f1f1f1;
@@ -94,7 +95,9 @@
 </style>
 
 <footer class="footer">
+
     <div class="footer-container">
+
         <div class="footer-section">
             <h3>About us</h3>
             <p>The exam system is an important tool to help assess the capacity and preparation of each individual, and create a fair foundation for candidates to show their abilities transparently and accurately.</p>
@@ -113,7 +116,7 @@
         <div class="footer-section">
             <h3>Contact</h3>
             <p>Adress: 123 Street ABC, District XYZ</p>
-            <p>Email: contact@shoponline.com</p>
+            <p>Email: contact@onlinesystem.edu.com.vn</p>
             <p>Phone: (84) 123-456-789</p>
         </div>
 

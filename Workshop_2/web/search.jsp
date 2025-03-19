@@ -4,6 +4,7 @@
     Author     : Admin
 --%>
 
+<%@page import="dto.ExamCategoriesDTO"%>
 <%@page import="utils.AuthUtils"%>
 <%@page import="dto.ExamsDTO"%>
 <%@page import="java.util.List"%>
@@ -12,55 +13,65 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-16WWW">
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>JSP Page</title>
-
         <style>
-            .book-table {
-                width: 100%;
-                border-collapse: collapse;
-                margin: 25px 0;
-                font-size: 14px;
-                font-family: Arial, sans-serif;
-                box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            .table{
+                display: flex;
+                justify-content: space-between; /* Để hai bảng nằm hai bên */
+                align-items: flex-start; /* Canh trên cùng */
+                gap: 20px; /* Khoảng cách giữa hai bảng */
             }
 
-            .book-table thead th {
-                background-color: #009879;
+            .exam-table, .category-table {
+                width: 48%; /* Điều chỉnh chiều rộng cho mỗi bảng */
+                border-collapse: collapse;
+                margin: 25px 1%; /* Thêm khoảng cách giữa các bảng */
+                font-size: 14px;
+                font-family: Arial, sans-serif;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+                border-radius: 8px;
+                overflow: hidden;
+                background: linear-gradient(135deg, #a3c2f2, #EDC237);
+            }
+
+            .exam-table thead th, .category-table thead th {
+                background: #EDC237;
                 color: #ffffff;
                 text-align: left;
                 font-weight: bold;
-                padding: 12px 15px;
+                padding: 14px 18px;
+                text-transform: uppercase;
+                letter-spacing: 1px;
             }
 
-            .book-table tbody tr {
-                border-bottom: 1px solid #dddddd;
+            .exam-table tbody tr, .category-table tbody tr {
+                border-bottom: 1px solid #e0e0e0;
             }
 
-            .book-table tbody tr:nth-of-type(even) {
-                background-color: #f3f3f3;
+            .exam-table tbody tr:nth-of-type(even), .category-table tbody tr:nth-of-type(even) {
+                background-color: #f9f9f9;
             }
 
-            .book-table tbody tr:last-of-type {
-                border-bottom: 2px solid #009879;
+            .exam-table tbody td, .category-table tbody td {
+                padding: 14px 18px;
+                text-align: left;
+                font-size: 14px;
+                color: #333;
             }
 
-            .book-table tbody td {
-                padding: 12px 15px;
-            }
-
-            .book-table tbody tr:hover {
-                background-color: #f5f5f5;
+            .exam-table tbody tr:hover, .category-table tbody tr:hover {
+                background-color: #cfe2f3;
                 transition: 0.3s ease;
+                transform: translateY(-2px);
             }
 
-            /* Search section styles */
             .search-section {
-                background-color: #fff;
+                background-color: #ffffff;
                 border-radius: 8px;
                 padding: 20px;
                 margin-bottom: 20px;
-                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
                 display: flex;
                 align-items: center;
             }
@@ -79,7 +90,7 @@
 
             .search-input {
                 flex-grow: 1;
-                padding: 10px;
+                padding: 12px;
                 border: 1px solid #ddd;
                 border-radius: 4px;
                 font-size: 14px;
@@ -88,34 +99,33 @@
             }
 
             .search-input:focus {
-                border-color: #009879;
+                border-color: #3B967B;
                 outline: none;
-                box-shadow: 0 0 0 2px rgba(0, 152, 121, 0.2);
+                box-shadow: 0 0 0 2px rgba(237, 194, 55, 0.2);
             }
 
             .search-btn {
-                background-color: #009879;
+                background-color: #3B967B;
                 color: white;
                 border: none;
                 border-radius: 4px;
-                padding: 10px 15px;
+                padding: 12px 18px;
                 cursor: pointer;
                 font-weight: bold;
                 transition: background-color 0.3s;
             }
 
             .search-btn:hover {
-                background-color: #00806a;
+                background-color: #d8a928;
             }
 
-            /* Add button styles */
             .add-btn {
                 display: inline-block;
                 background-color: #007bff;
                 color: white;
                 text-decoration: none;
                 border-radius: 4px;
-                padding: 10px 15px;
+                padding: 12px 18px;
                 margin-bottom: 20px;
                 font-weight: bold;
                 transition: background-color 0.3s;
@@ -126,22 +136,25 @@
                 text-decoration: none;
             }
 
-            /* Add a nice icon to the add button */
             .add-btn::before {
                 content: "+";
                 margin-right: 5px;
                 font-weight: bold;
             }
 
-            /* Responsive design */
-            @media screen and (max-width: 600px) {
-                .book-table {
-                    font-size: 12px;
-                }
+            .table-container {
+                display: flex;
+                justify-content: space-between;
+                flex-wrap: wrap;
+            }
 
-                .book-table thead th,
-                .book-table tbody td {
-                    padding: 8px 10px;
+            @media screen and (max-width: 600px) {
+                .exam-table, .category-table {
+                    width: 100%;
+                    margin: 10px 0;
+                }
+                .exam-table thead th, .exam-table tbody td, .category-table thead th, .category-table tbody td {
+                    padding: 10px 12px;
                 }
             }
         </style> 
@@ -149,77 +162,102 @@
     <body> 
         <%@include file="header.jsp" %>
         <div style="min-height: 500px; padding: 10px">
-            <c:set var="isLoggedIn" value="<%=AuthUtils.isLoggedIn(session)%>"/>
-            <c:set var="isAdmin" value="<%=AuthUtils.isInstructor(session)%>"/>
+            <% if (session.getAttribute("user") != null) {
+                    UserDTO user = (UserDTO) session.getAttribute("user");
+            %>
 
+            <%
+                String searchTerm = (request.getAttribute("searchTerm") != null) ? request.getAttribute("searchTerm").toString() : "";
+            %>
+            <div class="search-section">
+                <form action="MainController">
+                    <input type="hidden" name="action" value="search"/>
+                    <label for="searchInput">Search:</label>
+                    <input type="text" id="searchInput" name="searchTerm" value="<%=searchTerm%>" class="search-input" placeholder="Enter Exam title, Subject or ID..."/>
+                    <input type="submit" value="Search" class="search-btn"/>
+                </form>
+            </div>
 
-            <c:if test="${isLoggedIn}">
-                <c:set var="searchTerm" value="${requestScope.searchTerm==null?'':requestScope.searchTerm}" />
-                <div class="search-section">
-                    <form action="MainController">
-                        <input type="hidden" name="action" value="search"/>
-                        <label for="searchInput">Search Exam:</label>
-                        <input type="text" id="searchInput" name="searchTerm" value="${searchTerm}" class="search-input" placeholder="Enter Exam name, ID..."/>
-                        <input type="submit" value="Search" class="search-btn"/>
-                    </form>
-                </div>
-                <c:if test="${isAdmin}">
-                    <a href="examForm.jsp" class="add-btn">
-                        Add
-                    </a>
-                </c:if>
-                <%
-                    List<ExamsDTO> exams = (List<ExamsDTO>) request.getAttribute("listexam");
-                    if (exams != null) {
-                %>
-                <table class="book-table">
+            <% if (AuthUtils.isInstructor(session)) { %>
+            <a href="examForm.jsp" class="add-btn">
+                Add
+            </a> 
+            <% } %>
+            <div class = "table">
+            <%
+                List<ExamsDTO> edto = (List<ExamsDTO>) request.getAttribute("listExams");
+                if (edto != null) {
+            %>
+            <h2>View All Exams</h2>
+
+            <div class="table-container">
+                <table class="exam-table">
                     <thead>
                         <tr>
-                            <th>ID</th>
-                            <th>Title</th>
+                            <th>Exam ID</th>
+                            <th>Exam Title</th>
                             <th>Subject</th>
                             <th>Category</th>
-                            <th>Score</th>
-                            <th>Duration</th>
-                    <c:if test="${isInstructor}">
-                        <th>Action</th>
-                    </c:if>
-                    </tr>
-                    </thead>
-                    <tbody>
-                        <% for (ExamsDTO edto : exams) {
-                        %>
-                        <tr>
-                            <td><%=edto.getExam_id()%></td>
-                            <td><%=edto.getExam_title()%></td>
-                            <td><%=edto.getSubject()%></td>
-                            <td><%=edto.getCategory_id()%></td>
-                            <td><%=edto.getTotal_marks()%></td>
-                            <td><%=edto.getDuration()%></td>
-                            <%
-                                if (AuthUtils.isInstructor(session)) {
-                            %>
-                            <td>
-                                <form action ="MainController" method="post" style ="display:flex; align-items:center;gap:5px;">
-                                    <input type ="hidden" name="action" value="add">
-                                    <input type ="hidden" name="id" value="<%=edto.getExam_id()%>">
-                                </form>
-                            </td>
-                            <%}%>
+                            <th>Total Marks</th>
+                            <th>Duration (minutes)</th>
+                                <% if (AuthUtils.isInstructor(session)) { %>
+                            <th>Action</th>            
+                                <% } %>
                         </tr>
-                        <%
-                            }
-                        %>
+                    </thead>
+
+                    <tbody>
+                        <% for (ExamsDTO exam : edto) {%>
+                        <tr>
+                            <td><%= exam.getExam_id()%></td>
+                            <td><%= exam.getExam_title()%></td>
+                            <td><%= exam.getSubject()%></td>
+                            <td><%= exam.getCategory_id()%></td>
+                            <td><%= exam.getTotal_marks()%></td>
+                            <td><%= exam.getDuration()%></td>
+                            <% if (AuthUtils.isInstructor(session)) {%>
+                            <td> <a href="examForm.jsp?id=<%=exam.getExam_id()%>">
+                                    <img src="assets/images/add.png" style="height: 25px; display: block; margin: auto;" />
+                                </a> </td>
+                                <% } %>
+                        </tr>
+                        <% } %>
                     </tbody>
                 </table>
-            </c:if>
-        </c:if>
+            </div>
+            <% if (request.getAttribute("listCategories") != null) {
+                    List<ExamCategoriesDTO> categories = (List<ExamCategoriesDTO>) request.getAttribute("listCategories");
+            %>
+            <h2>View Category Exams</h2>
+            <div class="table-container">
+                <table class="category-table">
+                    <thead>
+                        <tr>
+                            <th>Category ID</th>
+                            <th>Category Name</th>
+                            <th>Description</th>                            
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% for (ExamCategoriesDTO category : categories) {%>
+                        <tr>
+                            <td><%= category.getCategory_id()%></td>
+                            <td><%= category.getCategory_name()%></td>
+                            <td><%= category.getDescription()%></td>
+                        </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+                <% } %>
+            </div>
 
-        <c:if test="${!isLoggedIn}">
-            You do not have permission to access this content.
-        </c:if>
-    </div>
-    <jsp:include page="footer.jsp"/>
-</body>
+            <% } %>
+
+            <% } else { %>
+            <p>You do not have permission to access this content.</p>
+            <% }%>
+        </div>
+        </div>
+        <jsp:include page="footer.jsp"/>
+    </body>
 </html>
-
