@@ -137,7 +137,7 @@
                 color: #e74c3c;
                 margin-top: 0;
             }
-            
+
             .back-link {
                 display: block;
                 text-align: center;
@@ -145,7 +145,7 @@
                 color: #3498db;
                 text-decoration: none;
             }
-            
+
             .back-link:hover {
                 text-decoration: underline;
             }
@@ -154,11 +154,11 @@
                 .form-container {
                     padding: 20px;
                 }
-                
+
                 .button-group {
                     flex-direction: column;
                 }
-                
+
                 input[type="submit"], input[type="reset"] {
                     margin: 5px 0;
                 }
@@ -192,17 +192,19 @@
                 txtSubject_error = txtSubject_error.equals("null") ? "" : txtSubject_error;
                 String txtCategoryID_error = request.getAttribute("txtEstimateLaunch_error") + "";
                 txtCategoryID_error = txtCategoryID_error.equals("null") ? "" : txtCategoryID_error;
-                String txtTotalmarks_error = request.getAttribute("txtTotalmarks_error") + "";
-                txtTotalmarks_error = txtTotalmarks_error.equals("null") ? "" : txtTotalmarks_error;
+                String txtTotalMarks_error = request.getAttribute("txtTotalMarks_error") + "";
+                txtTotalMarks_error = txtTotalMarks_error.equals("null") ? "" : txtTotalMarks_error;
+                String txtDuration_error = request.getAttribute("txtDuration_error") + "";
+                txtDuration_error = txtDuration_error.equals("null") ? "" : txtDuration_error;
             %>
             <div class="form-container">
-                <h1>Products Information</h1>
+                <h1>Create New Exam</h1>
                 <form action="MainController" method="post">
                     <input type="hidden" name="action" value="add"/>
 
                     <div class="form-group">
                         <label for="txtExamID">Exam ID:</label>
-                        <input type="text" id="txtExamID" name="txtExamID" value="<%=edto.getExam_id()%>"/>
+                        <input type="number" id="txtExamID" name="txtExamID" value="<%=edto.getExam_id()%>"/>
                         <% if (!txtExamID_error.isEmpty()) {%>
                         <div class="error-message"><%=txtExamID_error%></div>
                         <% }%>
@@ -228,12 +230,20 @@
                         <div class="error-message"><%=txtCategoryID_error%></div>
                         <% }%>
                     </div>
+
+                    <div class="form-group">
+                        <label for="txtTotalMarks">Total Marks:</label>
+                        <input type="number" id="txtTotalMarks" name="txtTotalMarks" value="<%=edto.getTotal_marks()%>"/>
+                        <% if (!txtTotalMarks_error.isEmpty()) {%>
+                        <div class="error-message"><%=txtTotalMarks_error%></div>
+                        <% }%>
+                    </div>
                     
                     <div class="form-group">
-                        <label for="txtTotalmarks">Total Marks:</label>
-                        <input type="number" id="txtTotalmarks" name="txtTotalmarks" value="<%=edto.getTotal_marks()%>"/>
-                        <% if (!txtTotalmarks_error.isEmpty()) {%>
-                        <div class="error-message"><%=txtTotalmarks_error%></div>
+                        <label for="txtDuration">Duration (minutes):</label>
+                        <input type="number" id="txtDuration" name="txtDuration" value="<%=edto.getDuration()%>"/>
+                        <% if (!txtDuration_error.isEmpty()) {%>
+                        <div class="error-message"><%=txtDuration_error%></div>
                         <% }%>
                     </div>
 
@@ -242,7 +252,7 @@
                         <input type="reset" value="Reset"/>
                     </div>
                 </form>
-                
+
                 <a href="MainController?action=search" class="back-link">Back to Exam List</a>
             </div>
             <%} else {%>
@@ -252,7 +262,7 @@
                 <a href="MainController?action=search" class="back-link">Back to Exam List</a>
             </div>
             <%}
-                } else {%>
+            } else {%>
             <div class="form-container error-container">
                 <h1>Access Denied</h1>
                 <p>Please log in to access this page.</p>

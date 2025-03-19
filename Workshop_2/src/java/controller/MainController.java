@@ -56,9 +56,11 @@ public class MainController extends HttpServlet {
 
     protected String processSearch(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+
         String url = SEARCH_PAGE;
         List<ExamCategoriesDTO> listecdao = ecdao.readAll();
         request.setAttribute("list", listecdao);
+
         return url;
     }
 
@@ -76,102 +78,96 @@ public class MainController extends HttpServlet {
         }
         return url;
     }
-    
+
+    protected String processFilter(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        String url = SEARCH_PAGE;
+        String category_id = request.getParameter("category_id");
+        System.out.println(category_id);
+        if (category_id != null && !category_id.isEmpty()) {
+            int category_idInt = Integer.parseInt(category_id);
+            List<ExamsDTO> listExamDTO = ExamsDAO.getExamCategoryByID(category_idInt);
+            String category_name = ecdao.getCategoryNameById(category_idInt);
+            request.setAttribute("listExamDTO", listExamDTO);
+            request.setAttribute("category_name", category_name);
+        } else {
+            request.setAttribute("message_Filter", "Please choose Category Name!");
+        }
+        List<ExamCategoriesDTO> list = ecdao.readAll();
+        request.setAttribute("list", list);
+        url = SEARCH_PAGE;
+        return url;
+    }
+
     protected String processViewExamCategory(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String url = LOGIN_PAGE;
-        
+
         // Cần đăng nhập mới cho view
         HttpSession session = request.getSession();
         if (AuthUtils.isLoggedIn(session)) {
-            
+
             List<ExamCategoriesDTO> listCategories = ecdao.viewExamCategory();
             request.setAttribute("listCategories", listCategories);
-            
+
         }
         return url;
     }
-    
-    protected String processCreateExam(HttpServletRequest request, HttpServletResponse response)
+
+    protected String processAdd(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String url = SEARCH_PAGE;
-        String exam_title = request.getParameter("exam_title");
-        String subject = request.getParameter("Subject");
-        String strcategory_id = request.getParameter("category_id");
-        String strtotal_marks = request.getParameter("total_marks");
-        String strDuration = request.getParameter("Duration");
-
-        boolean check = false;
-        if (exam_title == null || exam_title.trim().equals("")) {
-            check = true;
-            request.setAttribute("Error_exam_title", "Exam Title can't empty!");
-        }
-        if (subject == null || subject.trim().equals("")) {
-            check = true;
-            request.setAttribute("Error_subject", "Subject can't empty!");
-        }
-
-        int category_id = 0;
-        if (strcategory_id == null || strcategory_id.trim().isEmpty()) {
-            check = true;
-            request.setAttribute("Error_category_id", "Category can't be empty!");
-        } else {
+        String url = LOGIN_PAGE;
+        HttpSession session = request.getSession();
+        if (AuthUtils.isInstructor(session)) {
             try {
-                category_id = Integer.parseInt(strcategory_id);
-            } catch (NumberFormatException e) {
-                check = true;
-                request.setAttribute("Error_category_id", "Invalid Category!");
-            }
-        }
+                boolean checkError = false;
 
-        int total_marks = 0;
-        if (strtotal_marks == null || strtotal_marks.trim().isEmpty()) {
-            check = true;
-            request.setAttribute("Error_total_marks", "Total Marks can't be empty!");
-        } else {
-            try {
-                total_marks = Integer.parseInt(strtotal_marks);
-                if (total_marks <= 0) {
-                    check = true;
-                    request.setAttribute("Error_total_marks", "Total Marks must be greater than 0!");
+                int exam_id = Integer.parseInt(request.getParameter("txtExamID"));
+                String exam_title = request.getParameter("txtExamTitle");
+                String Subject = request.getParameter("txtSubject");
+                int category_id = Integer.parseInt(request.getParameter("txtCategoryID"));
+                int total_marks = Integer.parseInt(request.getParameter("txtTotalMarks"));
+                int Duration = Integer.parseInt(request.getParameter("txtDuration"));
+
+                if (exam_id < 0) {
+                    checkError = true;
+                    request.setAttribute("txtExamID_error", "ID of Exam must be greater than zero !");
                 }
-            } catch (NumberFormatException e) {
-                check = true;
-                request.setAttribute("Error_total_marks", "Invalid Total Marks!");
-            }
-        }
-
-        int Duration = 0;
-        if (strDuration == null || strDuration.trim().isEmpty()) {
-            check = true;
-            request.setAttribute("Error_duration", "Duration can't be empty!");
-        } else {
-            try {
-                Duration = Integer.parseInt(strDuration);
-                if (Duration <= 0) {
-                    check = true;
-                    request.setAttribute("Error_duration", "Duration must be greater than 0!");
+                if (exam_title == null || exam_title.trim().isEmpty()) {
+                    checkError = true;
+                    request.setAttribute("txtExamTitle_error", "Title cannot be empty !");
                 }
-            } catch (NumberFormatException e) {
-                check = true;
-                request.setAttribute("Error_duration", "Invalid Duration!");
-            }
-        }
+                if (Subject == null || Subject.trim().isEmpty()) {
+                    checkError = true;
+                    request.setAttribute("txtSubject_error", "Subject Just only (EnglishFunny,EnglishSame,EnglishMix) !");
+                }
+                if (category_id < 0 || category_id > 7) {
+                    checkError = true;
+                    request.setAttribute("txtCategoryID_error", "Category ID must be greater than zero and Just enter [1-7] !");
+                }
+                if (total_marks < 0) {
+                    checkError = true;
+                    request.setAttribute("txtTotalMarks_error", "Score must be greater than zero !");
+                }
+                if (Duration < 0 || Duration > 200) {
+                    checkError = true;
+                    request.setAttribute("txtDuration_error", "Duration is less than 200 minutes !");
+                }
 
-        ExamsDTO exam = new ExamsDTO(0, exam_title, subject, category_id, total_marks, Duration);
-        request.setAttribute("exam", exam);
-        List<ExamCategoriesDTO> list = ecdao.readAll();
-        request.setAttribute("list", list);
-        if (check) {
-            url = EXAM_FORM_PAGE;
-        } else {
-            boolean result = edao.create(exam);
-            if (result) {
-                request.setAttribute("message", "Create Exam Successfully!");
-            } else {
-                request.setAttribute("message", "Create Exam Fail!");
+                ExamsDTO exam = new ExamsDTO(exam_id, exam_title, Subject, category_id, total_marks, Duration);
+
+                if (!checkError) {
+                    edao.create(exam);
+                    // search
+                    url = SEARCH_PAGE;
+                    processSearch(request, response);
+                } else {
+                    request.setAttribute("exam", exam);
+                    url = EXAM_FORM_PAGE;
+                }
+            } catch (Exception e) {
             }
-            url = EXAM_FORM_PAGE;
         }
         return url;
     }
@@ -198,15 +194,13 @@ public class MainController extends HttpServlet {
                     url = processViewExam(request, response);
                     url = processViewExamCategory(request, response);
                     url = processSearch(request, response);
+                } else if (action.equals("filter")) {
+                    url = processFilter(request, response);
                 } else if (action.equals("logout")) {
-                    request.getSession().invalidate();
+                    request.getSession().invalidate(); // Hủy session = Hủy 1 phiên làm việc
                     url = LOGIN_PAGE;
-                } else if (action.equals("goToCreateExam")) {
-                    List<ExamCategoriesDTO> list = ecdao.readAll();
-                    request.setAttribute("list", list);
-                    url = EXAM_FORM_PAGE;
-                } else if (action.equals("createExam")) {
-                    url = processCreateExam(request, response);
+                } else if (action.equals("add")) {
+                    url = processAdd(request, response);
                 }
             }
         } catch (Exception e) {

@@ -74,6 +74,7 @@
                 box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
                 display: flex;
                 align-items: center;
+                border: 2px solid #EDC237; /* Thêm viền cho phần search-section */
             }
 
             .search-section form {
@@ -96,6 +97,7 @@
                 font-size: 14px;
                 margin-right: 10px;
                 transition: border-color 0.3s;
+                border: 2px solid #EDC237; /* Thêm viền cho search-input */
             }
 
             .search-input:focus {
@@ -184,79 +186,79 @@
             </a> 
             <% } %>
             <div class = "table">
-            <%
-                List<ExamsDTO> edto = (List<ExamsDTO>) request.getAttribute("listExams");
-                if (edto != null) {
-            %>
-            <h2>View All Exams</h2>
+                <%
+                    List<ExamsDTO> edto = (List<ExamsDTO>) request.getAttribute("listExams");
+                    if (edto != null) {
+                %>
+                <h2>View All Exams</h2>
 
-            <div class="table-container">
-                <table class="exam-table">
-                    <thead>
-                        <tr>
-                            <th>Exam ID</th>
-                            <th>Exam Title</th>
-                            <th>Subject</th>
-                            <th>Category</th>
-                            <th>Total Marks</th>
-                            <th>Duration (minutes)</th>
-                                <% if (AuthUtils.isInstructor(session)) { %>
-                            <th>Action</th>            
-                                <% } %>
-                        </tr>
-                    </thead>
+                <div class="table-container">
+                    <table class="exam-table">
+                        <thead>
+                            <tr>
+                                <th>Exam ID</th>
+                                <th>Exam Title</th>
+                                <th>Subject</th>
+                                <th>Category</th>
+                                <th>Total Marks</th>
+                                <th>Duration (minutes)</th>
+                                    <% if (AuthUtils.isInstructor(session)) { %>
+                                <th>Action</th>            
+                                    <% } %>
+                            </tr>
+                        </thead>
 
-                    <tbody>
-                        <% for (ExamsDTO exam : edto) {%>
-                        <tr>
-                            <td><%= exam.getExam_id()%></td>
-                            <td><%= exam.getExam_title()%></td>
-                            <td><%= exam.getSubject()%></td>
-                            <td><%= exam.getCategory_id()%></td>
-                            <td><%= exam.getTotal_marks()%></td>
-                            <td><%= exam.getDuration()%></td>
-                            <% if (AuthUtils.isInstructor(session)) {%>
-                            <td> <a href="examForm.jsp?id=<%=exam.getExam_id()%>">
-                                    <img src="assets/images/add.png" style="height: 25px; display: block; margin: auto;" />
-                                </a> </td>
-                                <% } %>
-                        </tr>
-                        <% } %>
-                    </tbody>
-                </table>
-            </div>
-            <% if (request.getAttribute("listCategories") != null) {
-                    List<ExamCategoriesDTO> categories = (List<ExamCategoriesDTO>) request.getAttribute("listCategories");
-            %>
-            <h2>View Category Exams</h2>
-            <div class="table-container">
-                <table class="category-table">
-                    <thead>
-                        <tr>
-                            <th>Category ID</th>
-                            <th>Category Name</th>
-                            <th>Description</th>                            
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <% for (ExamCategoriesDTO category : categories) {%>
-                        <tr>
-                            <td><%= category.getCategory_id()%></td>
-                            <td><%= category.getCategory_name()%></td>
-                            <td><%= category.getDescription()%></td>
-                        </tr>
-                        <% } %>
-                    </tbody>
-                </table>
+                        <tbody>
+                            <% for (ExamsDTO exam : edto) {%>
+                            <tr>
+                                <td><%= exam.getExam_id()%></td>
+                                <td><%= exam.getExam_title()%></td>
+                                <td><%= exam.getSubject()%></td>
+                                <td><%= exam.getCategory_id()%></td>
+                                <td><%= exam.getTotal_marks()%></td>
+                                <td><%= exam.getDuration()%></td>
+                                <% if (AuthUtils.isInstructor(session)) {%>
+                                <td> <a href="examForm.jsp?id=<%=exam.getExam_id()%>">
+                                        <img src="assets/images/add.png" style="height: 25px; display: block; margin: auto;" />
+                                    </a> </td>
+                                    <% } %>
+                            </tr>
+                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
+                <% if (request.getAttribute("listCategories") != null) {
+                        List<ExamCategoriesDTO> categories = (List<ExamCategoriesDTO>) request.getAttribute("listCategories");
+                %>
+                <h2>View Category Exams</h2>
+                <div class="table-container">
+                    <table class="category-table">
+                        <thead>
+                            <tr>
+                                <th>Category ID</th>
+                                <th>Category Name</th>
+                                <th>Description</th>                            
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% for (ExamCategoriesDTO category : categories) {%>
+                            <tr>
+                                <td><%= category.getCategory_id()%></td>
+                                <td><%= category.getCategory_name()%></td>
+                                <td><%= category.getDescription()%></td>
+                            </tr>
+                            <% } %>
+                        </tbody>
+                    </table>
+                    <% } %>
+                </div>
+
                 <% } %>
+
+                <% } else { %>
+                <p>You do not have permission to access this content.</p>
+                <% }%>
             </div>
-
-            <% } %>
-
-            <% } else { %>
-            <p>You do not have permission to access this content.</p>
-            <% }%>
-        </div>
         </div>
         <jsp:include page="footer.jsp"/>
     </body>
